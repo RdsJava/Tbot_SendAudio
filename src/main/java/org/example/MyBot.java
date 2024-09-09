@@ -46,7 +46,7 @@ public class MyBot extends TelegramLongPollingBot {
             }
         } else if (message.getText().equals("/start")) {
             try {
-                sendMsg(message, "Наберите пожалуйста  название Ритма.");
+                sendMsg(message, "Наберите текст и выберите язык");
             } catch (TelegramApiException var6) {
                 throw new RuntimeException(var6);
             }
@@ -87,14 +87,14 @@ public class MyBot extends TelegramLongPollingBot {
         // Первая строчка клавиатуры
         KeyboardRow keyboardFirstRow = new KeyboardRow();
         // Добавляем кнопки в первую строчку клавиатуры
-        keyboardFirstRow.add("Пояснение");
-       // keyboardFirstRow.add("Найти ритм");
+        keyboardFirstRow.add("Опоры Хладавит + ");
+        keyboardFirstRow.add("Опоры Хладавит - ");
 
         // Вторая строчка клавиатуры
         KeyboardRow keyboardSecondRow = new KeyboardRow();
         // Добавляем кнопки во вторую строчку клавиатуры
-        //keyboardSecondRow.add("Команда 3");
-       // keyboardSecondRow.add("Команда 4");
+        keyboardSecondRow.add("ЦиклоХладавит + ");
+        keyboardSecondRow.add("Циклохладавит - ");
 
         // Добавляем все строчки клавиатуры в список
         keyboard.add(keyboardFirstRow);
