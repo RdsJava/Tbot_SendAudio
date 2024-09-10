@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,12 +18,12 @@ public class MyBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "";
+        return "TextsToAudioBot";
     }
 
     @Override
     public String getBotToken() {
-        return "";
+        return "6903892619:AAFMfbCo2NToWAbqX2aCRN4nm0WqQusOXGI";
     }
 
     @Override
@@ -32,16 +33,53 @@ public class MyBot extends TelegramLongPollingBot {
         sendMessage.enableMarkdown(true);
 
         FindFile findFile = new FindFile();
+        SendAudioToTBot sendAudioToTBot = new SendAudioToTBot();
         System.out.println(update.getMessage().getText());
         Message message = update.getMessage();
 
         // <p>Используйте &lt; вместо <, &gt; вместо >, &amp; вместо &, &quot; вместо " и &apos; вместо '.</p>
         //< ➔ &lt; //> ➔ &gt; //& ➔ &amp; //" ➔ &quot; //' ➔ &apos; или &#39;
-
-        if (message.getText().equals("Пояснение")) {
+        if (message != null && message.hasText()) {
+            switch (message.getText()) {
+                case "/start":
+                    try {
+                        sendMsg(message, "Это команда старт!");
+                    } catch (TelegramApiException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println(message.getText());
+                    break;
+                case "Опоры Хладавит +":
+                    try {
+                        sendMsg(message, "Опоры Хладавит +");
+                    } catch (TelegramApiException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println(message.getText());
+                    break;
+                case "Опоры Хладавит -":
+                    try {
+                        sendMsg(message, "Опоры Хладавит -");
+                    } catch (TelegramApiException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println(message.getText());
+                    break;
+                default:
+                    try {
+                        sendMsg(message, "Это дефолт! Брейк!");
+                    } catch (TelegramApiException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println(message.getText());
+                    break;
+            }
+        }
+    /**
+        if (message.getText().equals("Циклохладавит + ")) {
             try {
-                sendMsg(message, " <u>Первые две цифры номер тома. Следующие цифры номер страницы.</u>");
-            } catch (TelegramApiException var7) {
+                sendAudioToTBot.sendAudioToTBot(String.valueOf(update.getMessage().getText()));
+            } catch (IOException var7) {
                 throw new RuntimeException(var7);
             }
         } else if (message.getText().equals("/start")) {
@@ -56,17 +94,14 @@ public class MyBot extends TelegramLongPollingBot {
             } catch (TelegramApiException var5) {
                 throw new RuntimeException(var5);
             }
+            **/
         }
-    }
+
 
     public void sendMsg(Message message, String text) throws TelegramApiException {
         SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(true);
-        sendMessage.setChatId(message.getChatId().toString());
-        sendMessage.setReplyToMessageId(message.getMessageId());
-        sendMessage.setText(text);
-        sendMessage.setParseMode(ParseMode.HTML);
-        execute(sendMessage);
+
 
         /*
          * Для этого в Telegram API у класса SendMessage есть метод setParseMode(),
@@ -78,8 +113,12 @@ public class MyBot extends TelegramLongPollingBot {
          * в этом случае подобное форматирование текста будет выглядеть так: **жирный шрифт** *курсив*
          */
 
-
+        // Создаем клавиатуру
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        sendMessage.setReplyMarkup(replyKeyboardMarkup);
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(false);
 
         /* Создаем список строк клавиатуры */
         List<KeyboardRow> keyboard = new ArrayList<>();
@@ -103,6 +142,16 @@ public class MyBot extends TelegramLongPollingBot {
         // и устанавливаем этот список нашей клавиатуре
         replyKeyboardMarkup.setKeyboard(keyboard);
 
+        sendMessage.setChatId(message.getChatId().toString());
+        sendMessage.setReplyToMessageId(message.getMessageId());
+        sendMessage.setText(text);
+        sendMessage.setParseMode(ParseMode.HTML);
+        execute(sendMessage);
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
 
+        }
     }
 }
